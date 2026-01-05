@@ -1,0 +1,13 @@
+import { ApiProperty } from '@midwayjs/swagger';
+import { BaseVO } from '../../../../common/base-vo';
+
+export class $1VO extends BaseVO {
+  @ApiProperty({
+    description: '代码',
+  })
+  code?: string;
+  @ApiProperty({
+    description: '名称',
+  })
+  name?: string;
+}
