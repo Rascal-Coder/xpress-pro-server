@@ -1,5 +1,5 @@
 import { ApiProperty } from '@midwayjs/swagger';
-import { PageDTO } from '../../../../common/page-dto';
+import { PageDTO } from '../../../../common/page.dto';
 
 export class $1PageDTO extends PageDTO {
   @ApiProperty({ description: '代码' })

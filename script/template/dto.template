@@ -1,7 +1,7 @@
 import { Rule } from '@midwayjs/validate';
 import { ApiProperty } from '@midwayjs/swagger';
 import { $1Entity } from '../entity/$2';
-import { BaseDTO } from '../../../../common/base-dto';
+import { BaseDTO } from '../../../../common/base.dto';
 import { requiredString } from '../../../../common/common-validate-rules';
 import { R } from '../../../../common/base-error-util';
 
