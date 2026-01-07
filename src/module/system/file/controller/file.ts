@@ -13,6 +13,8 @@ export class FileController {
   @Post('/upload')
   @ApiBody({ description: 'file' })
   async upload(@Files() files) {
+    console.log('files', files);
+
     if (files.length) {
       return await this.fileService.upload(files[0]);
     }

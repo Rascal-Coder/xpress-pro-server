@@ -6,6 +6,7 @@
   "dependencies": {
     "@midwayjs/bootstrap": "^3.12.0",
     "@midwayjs/core": "^3.12.0",
+    "@midwayjs/cross-domain": "^3.20.19",
     "@midwayjs/decorator": "^3.20.19",
     "@midwayjs/i18n": "^3.20.19",
     "@midwayjs/info": "^3.12.0",

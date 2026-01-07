@@ -51,4 +51,12 @@ export default {
     secretKey: 'minio@123',
     bucketName: 'xpress-minio',
   } as MinioConfig,
+  cors:{
+    origin:"*",
+    credentials: true,
+  },
+  upload: {
+    mode: 'file',
+    fileSize: '10mb',
+  },
 } as MidwayConfig;

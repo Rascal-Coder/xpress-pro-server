@@ -6,6 +6,8 @@ import { join } from 'path';
 import * as orm from '@midwayjs/typeorm';
 import * as redis from '@midwayjs/redis';
 import * as swagger from '@midwayjs/swagger';
+import * as crossDomain from '@midwayjs/cross-domain';
+import * as upload from '@midwayjs/upload';
 import { ValidateErrorFilter } from './filter/validate.filter';
 import { CommonErrorFilter } from './filter/common.filter';
 // import { DefaultErrorFilter } from './filter/default.filter';
@@ -21,6 +23,8 @@ import * as i18n from '@midwayjs/i18n';
     redis,
     i18n,
     swagger,
+    crossDomain,
+    upload,
     {
       component: info,
       enabledEnvironment: ['local'],

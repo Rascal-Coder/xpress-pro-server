@@ -25,7 +25,7 @@ export class FileService extends BaseService<FileEntity> {
   // 上传方法
   async upload(file: UploadFileInfo<string>) {
     const fileName = `${new Date().getTime()}_${file.filename}`;
-
+    // 这里使用了typeorm的事务，如果文件信息存表失败的情况下，就不用上传到minio服务器了，如果后面上传文件失败了，前面插入的数据，也会自动回滚。保证了不会有脏数据。
     const data = await this.defaultDataSource.transaction(async manager => {
       const fileEntity = new FileEntity();
       fileEntity.fileName = fileName;
