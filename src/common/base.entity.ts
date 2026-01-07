@@ -1,9 +1,9 @@
 import { ApiProperty } from '@midwayjs/swagger';
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 export class BaseEntity {
   @ApiProperty({ description: 'id' })
-  @PrimaryGeneratedColumn({ comment: '主键', name: 'id', type: 'bigint' })
+  @PrimaryColumn({ comment: '主键', name: 'id', type: 'bigint' })
   id?: string;
 
   @ApiProperty({ description: '创建时间' })
