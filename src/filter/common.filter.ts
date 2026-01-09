@@ -1,6 +1,6 @@
 import { Catch } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
-import { CommonError } from '../common/common-error';
+import { CommonError } from '@/common/common.error';
 import { MidwayI18nService } from '@midwayjs/i18n';
 
 @Catch(CommonError)

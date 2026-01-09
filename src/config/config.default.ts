@@ -1,6 +1,5 @@
 import { MidwayConfig } from '@midwayjs/core';
 import { MinioConfig } from '../interface';
-import { EverythingSubscriber } from '../typeorm/typeorm-event-subscriber';
 
 export default {
   // use for cookie sign key, should change to your own and keep security
@@ -25,7 +24,6 @@ export default {
         // 扫描entity文件夹
         entities: ['**/entity/*{.ts,.js}'],
         timezone: '+00:00',
-        subscribers: [EverythingSubscriber],
       },
     },
   },
@@ -51,10 +49,6 @@ export default {
     secretKey: 'minio@123',
     bucketName: 'xpress-minio',
   } as MinioConfig,
-  cors:{
-    origin:"*",
-    credentials: true,
-  },
   upload: {
     mode: 'file',
     fileSize: '10mb',

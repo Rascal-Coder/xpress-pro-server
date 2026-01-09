@@ -6,12 +6,10 @@ import { join } from 'path';
 import * as orm from '@midwayjs/typeorm';
 import * as redis from '@midwayjs/redis';
 import * as swagger from '@midwayjs/swagger';
-import * as crossDomain from '@midwayjs/cross-domain';
 import * as upload from '@midwayjs/upload';
 import { ValidateErrorFilter } from './filter/validate.filter';
 import { CommonErrorFilter } from './filter/common.filter';
-// import { DefaultErrorFilter } from './filter/default.filter';
-// import { NotFoundFilter } from './filter/notfound.filter';
+import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import * as i18n from '@midwayjs/i18n';
 
@@ -22,8 +20,11 @@ import * as i18n from '@midwayjs/i18n';
     orm,
     redis,
     i18n,
-    swagger,
-    crossDomain,
+    {
+      component: swagger,
+      enabledEnvironment: ['local'],
+    },
+    // crossDomain,
     upload,
     {
       component: info,
@@ -40,7 +41,10 @@ export class MainConfiguration {
     // add middleware
     this.app.useMiddleware([ReportMiddleware]);
     // add filter
-    // this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
-    this.app.useFilter([ValidateErrorFilter, CommonErrorFilter]);
+    this.app.useFilter([
+      ValidateErrorFilter,
+      CommonErrorFilter,
+      NotFoundFilter,
+    ]);
   }
 }
