@@ -1,6 +1,7 @@
+import { TokenConfig } from '@/interface/token.config';
 import { MidwayConfig } from '@midwayjs/core';
-import { MinioConfig } from '../interface';
-
+// import { MinioConfig } from '../interface';
+import * as redisStore from 'cache-manager-ioredis';
 export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1767507947430_3851',
@@ -40,17 +41,53 @@ export default {
       en_US: require('../locales/en_US'),
       zh_CN: require('../locales/zh_CN'),
     },
+    defaultLocale: 'zh_CN',
   },
-  minio: {
-    endPoint: 'localhost',
-    port: 9001,
-    useSSL: false,
-    accessKey: 'minio',
-    secretKey: 'minio@123',
-    bucketName: 'xpress-minio',
-  } as MinioConfig,
-  upload: {
-    mode: 'file',
-    fileSize: '10mb',
+    validate: {
+    validationOptions: {
+      allowUnknown: true,
+    },
   },
+  token: {
+    expire: 60 * 60 * 2, // 2小时
+    refreshExpire: 60 * 60 * 24 * 7, // 7天
+  } as TokenConfig,
+  cache: {
+    store: redisStore,
+    options: {
+      host: 'localhost', // default value
+      port: 6379, // default value
+      password: '',
+      db: 0,
+      keyPrefix: 'cache:',
+      ttl: 100,
+    },
+  },
+  captcha: {
+    default: {
+      size: 4,
+      noise: 1,
+      width: 120,
+      height: 40,
+    },
+    image: {
+      type: 'mixed',
+    },
+    formula: {},
+    text: {},
+    expirationTime: 3600,
+    idPrefix: 'captcha',
+  }
+  // minio: {
+  //   endPoint: 'localhost',
+  //   port: 9001,
+  //   useSSL: false,
+  //   accessKey: 'minio',
+  //   secretKey: 'minio@123',
+  //   bucketName: 'xpress-minio',
+  // } as MinioConfig,
+  // upload: {
+  //   mode: 'file',
+  //   fileSize: '10mb',
+  // },
 } as MidwayConfig;

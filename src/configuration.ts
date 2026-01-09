@@ -12,7 +12,7 @@ import { CommonErrorFilter } from './filter/common.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import * as i18n from '@midwayjs/i18n';
-
+import * as cache from '@midwayjs/cache';
 @Configuration({
   imports: [
     koa,
@@ -20,6 +20,7 @@ import * as i18n from '@midwayjs/i18n';
     orm,
     redis,
     i18n,
+    cache,
     {
       component: swagger,
       enabledEnvironment: ['local'],
