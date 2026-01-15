@@ -26,7 +26,6 @@
     "minio": "^8.0.6",
     "mysql2": "^3.16.0",
     "nanoid": "^5.1.6",
-    "node-rsa": "^1.1.1",
     "svg-captcha": "^1.4.0",
     "typeorm": "^0.3.28",
     "useragent": "^2.3.0"

@@ -10,9 +10,10 @@ import * as upload from '@midwayjs/upload';
 import { ValidateErrorFilter } from './filter/validate.filter';
 import { CommonErrorFilter } from './filter/common.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
-import { ReportMiddleware } from './middleware/report.middleware';
 import * as i18n from '@midwayjs/i18n';
 import * as cache from '@midwayjs/cache';
+import { AuthMiddleware } from './middleware/auth';
+import { UnauthorizedErrorFilter } from './filter/unauthorized.filter';
 @Configuration({
   imports: [
     koa,
@@ -40,12 +41,13 @@ export class MainConfiguration {
 
   async onReady() {
     // add middleware
-    this.app.useMiddleware([ReportMiddleware]);
+    this.app.useMiddleware([AuthMiddleware]);
     // add filter
     this.app.useFilter([
       ValidateErrorFilter,
       CommonErrorFilter,
       NotFoundFilter,
+      UnauthorizedErrorFilter,
     ]);
   }
 }

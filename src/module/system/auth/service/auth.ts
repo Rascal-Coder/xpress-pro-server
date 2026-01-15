@@ -46,21 +46,21 @@ export class AuthService {
 
     const { expire, refreshExpire } = this.tokenConfig;
 
-    const token = uuid();
+    const accessToken = uuid();
     const refreshToken = uuid();
 
     // multi可以实现redis指令并发执行
     await this.redisService
       .multi()
-      .set(`token:${token}`, JSON.stringify({ userId: user.id, refreshToken }))
-      .expire(`token:${token}`, expire)
+      .set(`accessToken:${accessToken}`, JSON.stringify({ userId: user.id, refreshToken }))
+      .expire(`accessToken:${accessToken}`, expire)
       .set(`refreshToken:${refreshToken}`, user.id)
       .expire(`refreshToken:${refreshToken}`, refreshExpire)
       .exec();
 
     return {
       expire,
-      token,
+      accessToken,
       refreshExpire,
       refreshToken,
     } as TokenVO;
@@ -77,12 +77,12 @@ export class AuthService {
 
     const { expire } = this.tokenConfig;
 
-    const token = uuid();
+    const accessToken = uuid();
 
     await this.redisService
       .multi()
-      .set(`token:${token}`, JSON.stringify({ userId, refreshToken }))
-      .expire(`token:${token}`, expire)
+      .set(`accessToken:${accessToken}`, JSON.stringify({ userId, refreshToken }))
+      .expire(`accessToken:${accessToken}`, expire)
       .exec();
 
     const refreshExpire = await this.redisService.ttl(
@@ -91,7 +91,7 @@ export class AuthService {
 
     return {
       expire,
-      token,
+      accessToken,
       refreshExpire,
       refreshToken: refreshToken.refreshToken,
     } as TokenVO;

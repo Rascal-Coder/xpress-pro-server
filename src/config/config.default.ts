@@ -43,7 +43,7 @@ export default {
     },
     defaultLocale: 'zh_CN',
   },
-    validate: {
+  validate: {
     validationOptions: {
       allowUnknown: true,
     },
@@ -77,7 +77,7 @@ export default {
     text: {},
     expirationTime: 3600,
     idPrefix: 'captcha',
-  }
+  },
   // minio: {
   //   endPoint: 'localhost',
   //   port: 9001,

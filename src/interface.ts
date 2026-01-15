@@ -22,6 +22,6 @@ interface UserContext {
 declare module '@midwayjs/core' {
   interface Context {
     userInfo: UserContext;
-    token: string;
+    accessToken: string;
   }
 }

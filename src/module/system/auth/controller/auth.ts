@@ -8,7 +8,7 @@ import {
   Get,
 } from '@midwayjs/decorator';
 import { ApiResponse } from '@midwayjs/swagger';
-import * as NodeRSA from 'node-rsa';
+import * as crypto from 'crypto';
 import { RedisService } from '@midwayjs/redis';
 import { Context } from '@midwayjs/core';
 
@@ -43,30 +43,46 @@ export class AuthController {
 
     const result = await this.captchaService.check(captchaId, captcha);
 
+    console.log('result', result);
+
     if (!result) {
       throw R.error('验证码错误');
     }
 
-    // const privateKey = await this.redisService.get(
-    //   `publicKey:${loginDTO.publicKey}`
-    // );
+    const privateKey = await this.redisService.get(
+      `publicKey:${loginDTO.publicKey}`
+    );
 
-    // await this.redisService.del(`publicKey:${loginDTO.publicKey}`);
+    await this.redisService.del(`publicKey:${loginDTO.publicKey}`);
 
-    // if (!privateKey) {
-    //   throw R.error('登录出现异常，请重新登录');
-    // }
+    if (!privateKey) {
+      throw R.error('登录出现异常，请重新登录');
+    }
 
-    // 解密
-    // const decrypt = new NodeRSA(privateKey);
-    // decrypt.setOptions({ encryptionScheme: 'pkcs1' });
-    // const password = decrypt.decrypt(loginDTO.password, 'utf8');
+    console.log('privateKey', privateKey);
+    // 解密 - 使用 Node.js 内置 crypto 模块
+    let password: string;
+    try {
+      password = crypto
+        .privateDecrypt(
+          {
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha256',
+          },
+          Buffer.from(loginDTO.password, 'base64')
+        )
+        .toString('utf8');
+    } catch (e) {
+      console.error('RSA decrypt error:', e);
+      throw R.error('登录出现异常，请重新登录');
+    }
 
-    // if (!password) {
-    //   throw R.error('登录出现异常，请重新登录');
-    // }
+    if (!password) {
+      throw R.error('登录出现异常，请重新登录');
+    }
 
-    // loginDTO.password = password;
+    loginDTO.password = password;
 
     return await this.authService.login(loginDTO);
   }
@@ -98,9 +114,18 @@ export class AuthController {
   @Get('/publicKey')
   @NotLogin()
   async getPublicKey() {
-    const key = new NodeRSA({ b: 512 });
-    const publicKey = key.exportKey('public');
-    const privateKey = key.exportKey('private');
+    // 使用 Node.js 内置 crypto 生成 RSA 密钥对
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+      modulusLength: 2048,
+      publicKeyEncoding: {
+        type: 'spki',
+        format: 'pem',
+      },
+      privateKeyEncoding: {
+        type: 'pkcs8',
+        format: 'pem',
+      },
+    });
     await this.redisService.set(`publicKey:${publicKey}`, privateKey);
     return publicKey;
   }
@@ -116,7 +141,7 @@ export class AuthController {
     // 清除token和refreshToken
     const res = await this.redisService
       .multi()
-      .del(`token:${this.ctx.token}`)
+      .del(`accessToken:${this.ctx.accessToken}`)
       .del(`refreshToken:${this.ctx.userInfo.refreshToken}`)
       .exec();
 

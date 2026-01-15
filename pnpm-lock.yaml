@@ -74,9 +74,6 @@ importers:
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6
-      node-rsa:
-        specifier: ^1.1.1
-        version: 1.1.1
       svg-captcha:
         specifier: ^1.4.0
         version: 1.4.0
@@ -2417,9 +2414,6 @@ packages:
 
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
-
-  node-rsa@1.1.1:
-    resolution: {integrity: sha512-Jd4cvbJMryN21r5HgxQOpMEqv+ooke/korixNNK3mGqfGJmy0M77WDDzo/05969+OkMy3XW1UuZsSmW9KQm7Fw==}
 
   normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
@@ -6175,10 +6169,6 @@ snapshots:
   node-int64@0.4.0: {}
 
   node-releases@2.0.27: {}
-
-  node-rsa@1.1.1:
-    dependencies:
-      asn1: 0.2.6
 
   normalize-package-data@2.5.0:
     dependencies:

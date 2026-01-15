@@ -41,12 +41,12 @@ export class AuthMiddleware implements IMiddleware<Context, NextFunction> {
         return;
       }
 
-      const token = ctx.header.authorization?.replace('Bearer ', '');
-      if (!token) {
+      const accessToken = ctx.header.authorization?.replace('Bearer ', '');
+      if (!accessToken) {
         throw R.unauthorizedError('未授权');
       }
 
-      const userInfoStr = await this.redisService.get(`token:${token}`);
+      const userInfoStr = await this.redisService.get(`accessToken:${accessToken}`);
       if (!userInfoStr) {
         throw R.unauthorizedError('未授权');
       }
@@ -54,7 +54,7 @@ export class AuthMiddleware implements IMiddleware<Context, NextFunction> {
       const userInfo = JSON.parse(userInfoStr);
 
       ctx.userInfo = userInfo;
-      ctx.token = token;
+      ctx.accessToken = accessToken;
       return next();
     };
   }
