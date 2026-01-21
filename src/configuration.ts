@@ -1,4 +1,4 @@
-import { Configuration, App } from '@midwayjs/core';
+import { Configuration, App, Config, Inject } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
@@ -17,6 +17,7 @@ import { UnauthorizedErrorFilter } from './filter/unauthorized.filter';
 import { DefaultErrorFilter } from './filter/default.filter';
 import * as dotenv from 'dotenv';
 import * as bull from '@midwayjs/bull';
+import { TypeORMDataSourceManager } from '@midwayjs/typeorm';
 // 加载环境变量
 const env = process.env.NODE_ENV || 'local';
 
@@ -47,7 +48,31 @@ dotenv.config({ path: join(__dirname, '..', envFile) });
 export class MainConfiguration {
   @App('koa')
   app: koa.Application;
+  @Config('typeorm.dataSource.default')
+  typeormConfig;
+  @Inject()
+  dataSourceManager: TypeORMDataSourceManager;
 
+  async onConfigLoad(): Promise<void> {
+    const tempDataSource = await this.dataSourceManager.createInstance(
+      this.typeormConfig,
+      'temp'
+    );
+
+    if (tempDataSource) {
+      const hasDatabase = await tempDataSource
+        .createQueryRunner()
+        .hasDatabase(this.typeormConfig.database);
+
+      if (!hasDatabase) {
+        await tempDataSource
+          .createQueryRunner()
+          .createDatabase(this.typeormConfig.database);
+      }
+
+      tempDataSource.destroy();
+    }
+  }
   async onReady() {
     // add middleware
     this.app.useMiddleware([AuthMiddleware]);
