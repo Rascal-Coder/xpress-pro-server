@@ -1,10 +1,9 @@
 import { TokenConfig } from '@/interface/token.config';
 import { MidwayConfig } from '@midwayjs/core';
 import { env } from 'process';
-// import { MinioConfig } from '../interface';
 import * as redisStore from 'cache-manager-ioredis';
 import { MinioConfig } from '@/interface';
-console.log('env.DB_HOST ',env.DB_HOST );
+console.log('env.DB_HOST ', env.DB_HOST);
 
 export default {
   // use for cookie sign key, should change to your own and keep security
@@ -37,8 +36,6 @@ export default {
       port: 6379, // Redis port
       host: env.REDIS_HOST || 'localhost', // Redis host
       password: env.REDIS_PASSWORD || '123456',
-      // host: 'localhost', // Redis host
-      // password: '123456',
       db: 0,
     },
   },
@@ -92,6 +89,15 @@ export default {
     secretKey: 'minio@123',
     bucketName: 'xpress-minio',
   } as MinioConfig,
+  bull: {
+    defaultQueueOptions: {
+      redis: {
+        port: 6379,
+        host: env.REDIS_HOST || 'localhost',
+        password: env.REDIS_PASSWORD || '123456',
+      },
+    },
+  },
   // upload: {
   //   mode: 'file',
   //   fileSize: '10mb',

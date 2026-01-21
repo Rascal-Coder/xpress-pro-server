@@ -16,6 +16,7 @@ import { AuthMiddleware } from './middleware/auth';
 import { UnauthorizedErrorFilter } from './filter/unauthorized.filter';
 import { DefaultErrorFilter } from './filter/default.filter';
 import * as dotenv from 'dotenv';
+import * as bull from '@midwayjs/bull';
 // 加载环境变量
 const env = process.env.NODE_ENV || 'local';
 
@@ -35,6 +36,7 @@ dotenv.config({ path: join(__dirname, '..', envFile) });
     },
     // crossDomain,
     upload,
+    bull,
     {
       component: info,
       enabledEnvironment: ['local'],
@@ -55,7 +57,7 @@ export class MainConfiguration {
       CommonErrorFilter,
       NotFoundFilter,
       UnauthorizedErrorFilter,
-      DefaultErrorFilter
+      DefaultErrorFilter,
     ]);
   }
 }
