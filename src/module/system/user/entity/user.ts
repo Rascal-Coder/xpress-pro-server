@@ -2,7 +2,7 @@ import { Entity, Column } from 'typeorm';
 import { BaseEntity } from '@/common/base.entity';
 import { omit } from 'lodash';
 import { UserVO } from '../vo/user';
-
+import { FileEntity } from '../../file/entity/file';
 @Entity('sys_user')
 export class UserEntity extends BaseEntity {
   @Column({ comment: '用户名称' })
@@ -20,6 +20,10 @@ export class UserEntity extends BaseEntity {
   @Column({ comment: '密码' })
   password: string;
   toVO(): UserVO {
-    return omit<UserEntity>(this, ['password']) as UserVO;
+    const userVO = omit<UserEntity>(this, ['password', 'avatar']) as UserVO;
+    userVO.avatarPath = this.avatarEntity?.filePath;
+    return userVO;
   }
+  
+  avatarEntity?: FileEntity;
 }

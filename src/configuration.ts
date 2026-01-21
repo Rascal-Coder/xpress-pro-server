@@ -14,6 +14,13 @@ import * as i18n from '@midwayjs/i18n';
 import * as cache from '@midwayjs/cache';
 import { AuthMiddleware } from './middleware/auth';
 import { UnauthorizedErrorFilter } from './filter/unauthorized.filter';
+import { DefaultErrorFilter } from './filter/default.filter';
+import * as dotenv from 'dotenv';
+// 加载环境变量
+const env = process.env.NODE_ENV || 'local';
+
+const envFile = `.env.${env}`;
+dotenv.config({ path: join(__dirname, '..', envFile) });
 @Configuration({
   imports: [
     koa,
@@ -48,6 +55,7 @@ export class MainConfiguration {
       CommonErrorFilter,
       NotFoundFilter,
       UnauthorizedErrorFilter,
+      DefaultErrorFilter
     ]);
   }
 }

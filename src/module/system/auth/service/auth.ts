@@ -12,7 +12,7 @@ import { RedisService } from '@midwayjs/redis';
 import { uuid } from '@/utils/uuid';
 import { RefreshTokenDTO } from '../dto/refresh.token';
 import { Context } from '@midwayjs/core';
-
+import { FileEntity } from '../../file/entity/file';
 @Provide()
 export class AuthService {
   @InjectEntityModel(UserEntity)
@@ -52,7 +52,10 @@ export class AuthService {
     // multi可以实现redis指令并发执行
     await this.redisService
       .multi()
-      .set(`accessToken:${accessToken}`, JSON.stringify({ userId: user.id, refreshToken }))
+      .set(
+        `accessToken:${accessToken}`,
+        JSON.stringify({ userId: user.id, refreshToken })
+      )
       .expire(`accessToken:${accessToken}`, expire)
       .set(`refreshToken:${refreshToken}`, user.id)
       .expire(`refreshToken:${refreshToken}`, refreshExpire)
@@ -81,7 +84,10 @@ export class AuthService {
 
     await this.redisService
       .multi()
-      .set(`accessToken:${accessToken}`, JSON.stringify({ userId, refreshToken }))
+      .set(
+        `accessToken:${accessToken}`,
+        JSON.stringify({ userId, refreshToken })
+      )
       .expire(`accessToken:${accessToken}`, expire)
       .exec();
 
@@ -95,5 +101,19 @@ export class AuthService {
       refreshExpire,
       refreshToken: refreshToken.refreshToken,
     } as TokenVO;
+  }
+   async getUserById(userId: number) {
+    const entity = await this.userModel
+      .createQueryBuilder('u')
+      .leftJoinAndMapOne(
+        'u.avatarEntity',
+        FileEntity,
+        'file',
+        'file.id = u.avatar'
+      )
+      .where('u.id = :id', { id: userId })
+      .getOne();
+
+    return entity.toVO();
   }
 }

@@ -1,9 +1,4 @@
-/**
- * @description User-Service parameters
- */
-export interface IUserOptions {
-  uid: number;
-}
+import '@midwayjs/core';
 
 export interface MinioConfig {
   endPoint: string;

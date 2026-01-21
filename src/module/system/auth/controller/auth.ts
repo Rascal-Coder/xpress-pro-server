@@ -21,6 +21,7 @@ import { UserService } from '../../user/service/user';
 import { NotLogin } from '@/decorator/not.login';
 import { UserVO } from '../../user/vo/user';
 import { RefreshTokenDTO } from '../dto/refresh.token';
+import { sendMail } from '@/utils/mailer';
 @Provide()
 @Controller('/auth')
 export class AuthController {
@@ -132,8 +133,8 @@ export class AuthController {
 
   @Get('/current/user')
   async getCurrentUser(): Promise<UserVO> {
-    const user = await this.userService.getById(this.ctx.userInfo.userId);
-    return user.toVO();
+    sendMail();
+    return await this.authService.getUserById(this.ctx.userInfo.userId);
   }
 
   @Post('/logout')
