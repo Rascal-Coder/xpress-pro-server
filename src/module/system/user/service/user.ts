@@ -87,10 +87,10 @@ export class UserService extends BaseService<UserEntity> {
 
       this.mailService.sendMail({
         to: email,
-        subject: 'fluxy-admin平台账号创建成功',
+        subject: 'bug-admin平台账号创建成功',
         html: `<div>
         <p>${userDTO.nickName}，你的账号已开通成功</p>
-        <p>登录地址：<a href="https://fluxyadmin.cn/#/user/login">https://fluxyadmin.cn/#/user/login</a></p>
+        <p>登录地址：<a href="https://bug-admin.cn/#/user/login">https://bug-admin.cn/#/user/login</a></p>
         <p>登录账号：${userDTO.email}</p>
         <p>登录密码：${password}</p>
         </div>`,
@@ -170,6 +170,10 @@ export class UserService extends BaseService<UserEntity> {
   }
   async removeUser(id: number) {
     await this.defaultDataSource.transaction(async manager => {
+      const tokens = await this.redisService.smembers(`userToken_${id}`);
+      const refreshTokens = await this.redisService.smembers(
+        `userRefreshToken_${id}`
+      );
       await Promise.all([
         manager
           .createQueryBuilder()
@@ -184,6 +188,10 @@ export class UserService extends BaseService<UserEntity> {
           .where('pkValue = :pkValue', { pkValue: id })
           .andWhere('pkName = "user_avatar"')
           .execute(),
+        ...tokens.map(token => this.redisService.del(`token:${token}`)),
+        ...refreshTokens.map(refreshToken =>
+          this.redisService.del(`refreshToken:${refreshToken}`)
+        ),
       ]);
     });
   }
@@ -206,5 +214,8 @@ export class UserService extends BaseService<UserEntity> {
       data: data.map(entity => entity.toVO()),
       total,
     };
+  }
+  async getByEmail(email: string) {
+    return await this.userModel.findOneBy({ email });
   }
 }
