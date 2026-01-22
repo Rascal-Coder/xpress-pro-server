@@ -59,6 +59,10 @@ export class AuthService {
       .expire(`accessToken:${accessToken}`, expire)
       .set(`refreshToken:${refreshToken}`, user.id)
       .expire(`refreshToken:${refreshToken}`, refreshExpire)
+      .set(`userToken:${user.id}`, accessToken)
+      .expire(`userToken:${accessToken}`, expire)
+      .set(`userRefreshToken:${user.id}`, refreshToken)
+      .expire(`userRefreshToken:${accessToken}`, refreshExpire)
       .exec();
 
     return {

@@ -2,7 +2,7 @@ import { TokenConfig } from '@/interface/token.config';
 import { MidwayConfig } from '@midwayjs/core';
 import { env } from 'process';
 import * as redisStore from 'cache-manager-ioredis';
-import { MinioConfig } from '@/interface';
+import { MinioConfig, MailConfig } from '@/interface';
 
 export default {
   // use for cookie sign key, should change to your own and keep security
@@ -101,6 +101,15 @@ export default {
       },
     },
   },
+  mail: {
+    host: 'smtp.qq.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: env.MAIL_USER,
+      pass: env.MAIL_PASS,
+    },
+  } as MailConfig,
   // upload: {
   //   mode: 'file',
   //   fileSize: '10mb',

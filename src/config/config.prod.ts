@@ -3,7 +3,7 @@ import * as redisStore from 'cache-manager-ioredis';
 import { env } from 'process';
 
 import { TokenConfig } from '@/interface/token.config';
-import { MinioConfig } from '@/interface';
+import { MailConfig, MinioConfig } from '@/interface';
 import typeormConfig from './typeorm.prod';
 
 export default {
@@ -81,4 +81,13 @@ export default {
       },
     },
   },
+  mail: {
+    host: 'smtp.qq.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: env.MAIL_USER,
+      pass: env.MAIL_PASS,
+    },
+  } as MailConfig,
 } as MidwayConfig;
