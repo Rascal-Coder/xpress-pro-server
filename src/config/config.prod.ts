@@ -1,39 +1,19 @@
-import { TokenConfig } from '@/interface/token.config';
 import { MidwayConfig } from '@midwayjs/core';
-import { env } from 'process';
 import * as redisStore from 'cache-manager-ioredis';
+import { env } from 'process';
+
+import { TokenConfig } from '@/interface/token.config';
 import { MinioConfig } from '@/interface';
+import typeormConfig from './typeorm.prod';
 
 export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1767507947430_3851',
   koa: {
     port: 7001,
+    globalPrefix: '/api',
   },
-  typeorm: {
-    dataSource: {
-      default: {
-        /**
-         * 单数据库实例
-         */
-        type: 'mysql',
-        host: env.DB_HOST || 'localhost', // 数据库ip地址，本地就写localhost
-        port: 3306,
-        username: env.DB_USERNAME || 'root',
-        password: env.DB_PASSWORD || '123456',
-        database: 'xpress_rolldown_db', // 数据库名称
-        synchronize: true, // 如果第一次使用，不存在表，有同步的需求可以写 true，注意会丢数据
-        logging: true,
-        // 扫描entity文件夹
-        entities: ['**/entity/*{.ts,.js}'],
-        timezone: '+00:00',
-        migrations: ['**/migration/*.ts'],
-        cli: {
-          migrationsDir: 'migration',
-        },
-      },
-    },
-  },
+  typeorm: typeormConfig.typeorm,
   redis: {
     client: {
       port: 6379, // Redis port
@@ -101,8 +81,4 @@ export default {
       },
     },
   },
-  // upload: {
-  //   mode: 'file',
-  //   fileSize: '10mb',
-  // },
 } as MidwayConfig;

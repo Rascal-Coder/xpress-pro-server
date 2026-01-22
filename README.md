@@ -27,3 +27,7 @@ $ npm start
 
 
 [midway]: https://midwayjs.org
+
+
+    "migration:generate": "npx mwtypeorm migration:generate -d ./src/config/config.default.ts ./src/migration/migration",
+    "migration:run": "npx mwtypeorm migration:run -d ./src/config/config.prod.ts",

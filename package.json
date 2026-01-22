@@ -30,6 +30,8 @@
     "nanoid": "^5.1.6",
     "nodemailer": "^7.0.12",
     "svg-captcha": "^1.4.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typeorm": "^0.3.28",
     "useragent": "^2.3.0"
   },
@@ -54,14 +56,17 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "node ./script/init-database && cross-env NODE_ENV=production pm2-runtime start ./bootstrap.js --name midway_app -i 4",
+    "start": "node ./script/init-database  && npm run migration:run && cross-env NODE_ENV=production pm2-runtime start ./bootstrap.js --name midway_app -i 4",
     "dev": "node ./script/init-database && cross-env NODE_ENV=local mwtsc --watch --run @midwayjs/mock/app.js",
     "test": "cross-env NODE_ENV=unittest jest",
     "cov": "jest --coverage",
     "lint": "mwts check",
     "lint:fix": "mwts fix",
     "ci": "npm run cov",
-    "build": "mwtsc --cleanOutDir"
+    "build": "mwtsc --cleanOutDir",
+    "migration:generate:dev": "node ./node_modules/@midwayjs/typeorm/cli.js migration:generate -d ./src/config/config.default.ts ./src/migration/migration",
+    "migration:generate": "node ./node_modules/@midwayjs/typeorm/cli.js migration:generate -d ./src/config/typeorm.prod.ts ./src/migration/migration",
+    "migration:run": "node ./node_modules/@midwayjs/typeorm/cli.js migration:run -d ./src/config/typeorm.prod.ts"
   },
   "repository": {
     "type": "git",
