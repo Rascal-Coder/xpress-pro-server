@@ -17,7 +17,9 @@ import { UnauthorizedErrorFilter } from './filter/unauthorized.filter';
 import { DefaultErrorFilter } from './filter/default.filter';
 import * as dotenv from 'dotenv';
 import * as bull from '@midwayjs/bull';
-import { TypeORMDataSourceManager } from '@midwayjs/typeorm';
+import { InjectEntityModel } from '@midwayjs/typeorm';
+import { UserEntity } from './module/system/user/entity/user';
+import { Repository } from 'typeorm';
 // 加载环境变量
 const env = process.env.NODE_ENV || 'local';
 
@@ -48,31 +50,9 @@ dotenv.config({ path: join(__dirname, '..', envFile) });
 export class MainConfiguration {
   @App('koa')
   app: koa.Application;
-  @Config('typeorm.dataSource.default')
-  typeormConfig;
-  @Inject()
-  dataSourceManager: TypeORMDataSourceManager;
+  @InjectEntityModel(UserEntity)
+  userModel: Repository<UserEntity>;
 
-  async onConfigLoad(): Promise<void> {
-    const tempDataSource = await this.dataSourceManager.createInstance(
-      this.typeormConfig,
-      'temp'
-    );
-
-    if (tempDataSource) {
-      const hasDatabase = await tempDataSource
-        .createQueryRunner()
-        .hasDatabase(this.typeormConfig.database);
-
-      if (!hasDatabase) {
-        await tempDataSource
-          .createQueryRunner()
-          .createDatabase(this.typeormConfig.database);
-      }
-
-      tempDataSource.destroy();
-    }
-  }
   async onReady() {
     // add middleware
     this.app.useMiddleware([AuthMiddleware]);
@@ -84,5 +64,22 @@ export class MainConfiguration {
       UnauthorizedErrorFilter,
       DefaultErrorFilter,
     ]);
+    
+    console.log(this.userModel, 'this.userModel');
+
+    const userCount = await this.userModel.count();
+
+    if (userCount === 0) {
+      console.log('检测到管理员账号不存在，正在为你创建。');
+      const adminUser = new UserEntity();
+      adminUser.nickName = '管理员';
+      adminUser.password =
+        '$2b$10$IGeaESSRuh7v/slgz2GfQ.TXvx1t9uPOhpfh50mYxkP0FoVs3whGy';
+      adminUser.email = 'admin@qq.com';
+      adminUser.phoneNumber = '18144444444';
+      adminUser.userName = 'admin';
+
+      await this.userModel.save(adminUser);
+    }
   }
 }

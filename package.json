@@ -54,8 +54,8 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production pm2-runtime start ./bootstrap.js --name midway_app -i 4",
-    "dev": "cross-env NODE_ENV=local mwtsc --watch --run @midwayjs/mock/app.js",
+    "start": "node ./script/init-database && cross-env NODE_ENV=production pm2-runtime start ./bootstrap.js --name midway_app -i 4",
+    "dev": "node ./script/init-database && cross-env NODE_ENV=local mwtsc --watch --run @midwayjs/mock/app.js",
     "test": "cross-env NODE_ENV=unittest jest",
     "cov": "jest --coverage",
     "lint": "mwts check",

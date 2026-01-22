@@ -44,8 +44,6 @@ export class AuthController {
 
     const result = await this.captchaService.check(captchaId, captcha);
 
-    console.log('result', result);
-
     if (!result) {
       throw R.error('验证码错误');
     }
@@ -60,7 +58,6 @@ export class AuthController {
       throw R.error('登录出现异常，请重新登录');
     }
 
-    console.log('privateKey', privateKey);
     // 解密 - 使用 Node.js 内置 crypto 模块
     let password: string;
     try {
