@@ -3,7 +3,7 @@ import { MidwayConfig } from '@midwayjs/core';
 import { env } from 'process';
 import * as redisStore from 'cache-manager-ioredis';
 import { MinioConfig, MailConfig } from '@/interface';
-
+import { EverythingSubscriber } from '@/typeorm-event-subscriber';
 export default {
   // use for cookie sign key, should change to your own and keep security
   keys: '1767507947430_3851',
@@ -31,6 +31,7 @@ export default {
         cli: {
           migrationsDir: 'migration',
         },
+        subscribers: [EverythingSubscriber],
       },
     },
   },

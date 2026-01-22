@@ -44,8 +44,8 @@ export class FileService extends BaseService<FileEntity> {
 
     return data;
   }
-
-  async setPKValue(id: number, pkValue: number, pkName: string) {
+  // 上传单据时，把单据id注入进去
+  async setPKValue(id: string, pkValue: string, pkName: string) {
     const entity = await this.getById(id);
     if (!entity) return;
     entity.pkValue = pkValue;
@@ -53,15 +53,27 @@ export class FileService extends BaseService<FileEntity> {
     await this.fileModel.save(entity);
     return entity;
   }
+  // 清理脏数据
   async clearEmptyPKValueFiles() {
     const curDate = new Date();
     curDate.setDate(curDate.getDate() - 1);
 
-    await this.fileModel
+    const records = await this.fileModel
       .createQueryBuilder()
       .where('createDate < :date', { date: curDate })
       .andWhere('pkValue is null')
-      .delete()
-      .execute();
+      .getMany();
+
+    this.defaultDataSource.transaction(async manager => {
+      await manager.remove(FileEntity, records);
+      await Promise.all(
+        records.map(record =>
+          this.minioClient.removeObject(
+            this.minioConfig.bucketName,
+            record.fileName
+          )
+        )
+      );
+    });
   }
 }

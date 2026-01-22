@@ -57,7 +57,7 @@ export class UserController {
   }
 
   @Get('/:id', { description: '根据id查询' })
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id') id: string) {
     return await this.userService.getById(id);
   }
 
@@ -86,8 +86,10 @@ export class UserController {
     if (!emailInfo.email) {
       throw R.error('邮箱不能为空');
     }
+    // 生成随机4位数
     const emailCaptcha = generateRandomCode();
 
+    // 把生成的随机数存到redis中，后面添加用户的时候需要做验证
     await this.redisService.set(
       `emailCaptcha:${emailInfo.email}`,
       emailCaptcha,

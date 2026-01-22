@@ -15,6 +15,7 @@ import { Context } from '@midwayjs/core';
 import { FileEntity } from '../../file/entity/file';
 import { ResetPasswordDTO } from '../dto/reset.password';
 import { RSAService } from '@/common/rsa.service';
+import { CaptchaService } from './captcha';
 @Provide()
 export class AuthService {
   @InjectEntityModel(UserEntity)
@@ -29,7 +30,8 @@ export class AuthService {
   rsaService: RSAService;
   @InjectDataSource()
   defaultDataSource: DataSource;
-
+  @Inject()
+  captchaService: CaptchaService;
   async login(loginDTO: LoginDTO): Promise<TokenVO> {
     const { accountNumber } = loginDTO;
     const user = await this.userModel
@@ -73,6 +75,13 @@ export class AuthService {
       .sadd(`userRefreshToken_${user.id}`, refreshToken)
       .exec();
 
+    const { captcha, captchaId } = loginDTO;
+
+    const result = await this.captchaService.check(captchaId, captcha);
+
+    if (!result) {
+      throw R.error('验证码错误');
+    }
     return {
       expire,
       accessToken,
