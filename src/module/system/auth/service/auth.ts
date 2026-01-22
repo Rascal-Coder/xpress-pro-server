@@ -102,7 +102,7 @@ export class AuthService {
       refreshToken: refreshToken.refreshToken,
     } as TokenVO;
   }
-   async getUserById(userId: number) {
+  async getUserById(userId: number) {
     const entity = await this.userModel
       .createQueryBuilder('u')
       .leftJoinAndMapOne(
@@ -113,6 +113,9 @@ export class AuthService {
       )
       .where('u.id = :id', { id: userId })
       .getOne();
+    if (!entity) {
+      throw R.error('当前用户不存在！');
+    }
 
     return entity.toVO();
   }
