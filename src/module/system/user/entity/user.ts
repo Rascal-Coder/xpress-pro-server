@@ -24,7 +24,7 @@ export class UserEntity extends BaseEntity {
   // @Column({ comment: '测试字段1' })
   // name1: string;
   toVO(): UserVO {
-    const userVO = omit<UserEntity>(this, ['password','avatar']) as UserVO;
+    const userVO = omit<UserEntity>(this, ['password', 'avatar']) as UserVO;
     userVO.avatarPath = this.avatarEntity?.filePath;
     return userVO;
   }

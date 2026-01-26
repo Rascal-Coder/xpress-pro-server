@@ -1,4 +1,4 @@
-import { Configuration, App} from '@midwayjs/core';
+import { Configuration, App } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
@@ -64,7 +64,7 @@ export class MainConfiguration {
       UnauthorizedErrorFilter,
       DefaultErrorFilter,
     ]);
-    
+
     console.log(this.userModel, 'this.userModel');
 
     const userCount = await this.userModel.count();

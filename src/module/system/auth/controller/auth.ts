@@ -57,7 +57,7 @@ export class AuthController {
     // if (!result) {
     //   throw R.error('验证码错误');
     // }
-    
+
     const password = await this.rsaService.decrypt(
       loginDTO.publicKey,
       loginDTO.password

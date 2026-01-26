@@ -46,7 +46,9 @@ export class AuthMiddleware implements IMiddleware<Context, NextFunction> {
         throw R.unauthorizedError('未授权');
       }
 
-      const userInfoStr = await this.redisService.get(`accessToken:${accessToken}`);
+      const userInfoStr = await this.redisService.get(
+        `accessToken:${accessToken}`
+      );
       if (!userInfoStr) {
         throw R.unauthorizedError('未授权');
       }
