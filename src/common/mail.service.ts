@@ -27,8 +27,6 @@ export class MailService {
       from: this.mailConfig.auth.user, // 发送方邮箱的账号
       ...mailInfo,
     });
-
-
     return info;
   }
 }

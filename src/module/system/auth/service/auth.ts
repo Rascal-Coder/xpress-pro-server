@@ -130,7 +130,7 @@ export class AuthService {
         'u.avatarEntity',
         FileEntity,
         'file',
-        'file.id = u.avatar'
+        'file.pkValue = u.id and file.pkName = "user_avatar"'
       )
       .where('u.id = :id', { id: userId })
       .getOne();
