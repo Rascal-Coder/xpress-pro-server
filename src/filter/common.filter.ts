@@ -1,20 +1,12 @@
-import { Catch } from '@midwayjs/decorator';
+import { Catch } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { CommonError } from '@/common/common.error';
-import { MidwayI18nService } from '@midwayjs/i18n';
+import { BaseErrorFilter } from './base.filter';
 
 @Catch(CommonError)
-export class CommonErrorFilter {
+export class CommonErrorFilter extends BaseErrorFilter {
   async catch(err: CommonError, ctx: Context) {
-    // 获取国际化服务
-    const i18nService = await ctx.requestContext.getAsync(MidwayI18nService);
-    // 翻译
-    const message = i18nService.translate(err.message) || err.message;
-    // 未捕获的错误，是系统错误，错误码是500
-    ctx.status = 400;
-    return {
-      code: 400,
-      message,
-    };
+    const message = await this.translateMessage(ctx, err.message);
+    return this.setErrorResponse(ctx, 400, message, err.businessCode);
   }
 }

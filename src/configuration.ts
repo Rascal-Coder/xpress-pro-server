@@ -13,6 +13,7 @@ import { NotFoundFilter } from './filter/notfound.filter';
 import * as i18n from '@midwayjs/i18n';
 import * as cache from '@midwayjs/cache';
 import { AuthMiddleware } from './middleware/auth';
+import { ResponseFormatMiddleware } from './middleware/response.format';
 import { UnauthorizedErrorFilter } from './filter/unauthorized.filter';
 import { DefaultErrorFilter } from './filter/default.filter';
 import * as dotenv from 'dotenv';
@@ -55,7 +56,7 @@ export class MainConfiguration {
 
   async onReady() {
     // add middleware
-    this.app.useMiddleware([AuthMiddleware]);
+    this.app.useMiddleware([AuthMiddleware, ResponseFormatMiddleware]);
     // add filter
     this.app.useFilter([
       ValidateErrorFilter,

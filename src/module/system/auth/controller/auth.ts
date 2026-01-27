@@ -50,20 +50,12 @@ export class AuthController {
   @ApiResponse({ type: TokenVO })
   @NotLogin()
   async login(@Body(ALL) loginDTO: LoginDTO) {
-    // const { captcha, captchaId } = loginDTO;
-
-    // const result = await this.captchaService.check(captchaId, captcha);
-
-    // if (!result) {
-    //   throw R.error('验证码错误');
-    // }
-
     const password = await this.rsaService.decrypt(
       loginDTO.publicKey,
       loginDTO.password
     );
     if (!password) {
-      throw R.error('登录出现异常，请重新登录');
+      throw R.error('登录出现异常，请重新登录', R.BusinessCode.LOGIN_EXCEPTION);
     }
 
     loginDTO.password = password;
@@ -74,9 +66,6 @@ export class AuthController {
   @Post('/refresh/token', { description: '刷新token' })
   @NotLogin()
   async refreshToken(@Body(ALL) data: RefreshTokenDTO) {
-    if (!data.refreshToken) {
-      throw R.error('用户凭证已过期，请重新登录！');
-    }
     return this.authService.refreshToken(data);
   }
 
@@ -116,7 +105,7 @@ export class AuthController {
       .exec();
 
     if (res.some(item => item[0])) {
-      throw R.error('退出登录失败');
+      throw R.error('退出登录失败', R.BusinessCode.LOGOUT_FAILED);
     }
 
     return true;
@@ -125,11 +114,11 @@ export class AuthController {
   @Post('/send/reset/password/email')
   async sendResetPasswordEmail(@Body() emailInfo: { email: string }) {
     if (!emailInfo.email) {
-      throw R.error('邮箱不能为空');
+      throw R.error('邮箱不能为空', R.BusinessCode.EMAIL_REQUIRED);
     }
 
     if (!(await this.userService.getByEmail(emailInfo.email))) {
-      throw R.error('系统中不存在当前邮箱');
+      throw R.error('系统中不存在当前邮箱', R.BusinessCode.EMAIL_NOT_FOUND);
     }
 
     const emailCaptcha = uuid();

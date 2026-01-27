@@ -1,17 +1,11 @@
 import { Catch, httpError, MidwayHttpError } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
-import { MidwayI18nService } from '@midwayjs/i18n';
+import { BaseErrorFilter } from './base.filter';
 
 @Catch(httpError.NotFoundError)
-export class NotFoundFilter {
+export class NotFoundFilter extends BaseErrorFilter {
   async catch(err: MidwayHttpError, ctx: Context) {
-    const i18nService = await ctx.requestContext.getAsync(MidwayI18nService);
-    const message = i18nService.translate('not.found');
-    ctx.status = 404;
-    return {
-      code: 404,
-      message,
-    };
+    const message = await this.translateMessage(ctx, 'not.found');
+    return this.setErrorResponse(ctx, 404, message);
   }
 }
-

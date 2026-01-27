@@ -45,14 +45,22 @@ export class AuthService {
       .getOne();
 
     if (!user) {
-      throw R.error('账号或密码错误！');
+      throw R.error(
+        '账号或密码错误！',
+        R.BusinessCode.ACCOUNT_OR_PASSWORD_ERROR
+      );
     }
 
     if (!bcrypt.compareSync(loginDTO.password, user.password)) {
-      throw R.error('用户名或密码错误！');
+      throw R.error(
+        '账号或密码错误！',
+        R.BusinessCode.ACCOUNT_OR_PASSWORD_ERROR
+      );
     }
 
     const { expire, refreshExpire } = this.tokenConfig;
+
+    console.log('expire', expire);
 
     const accessToken = uuid();
     const refreshToken = uuid();
@@ -67,10 +75,6 @@ export class AuthService {
       .expire(`accessToken:${accessToken}`, expire)
       .set(`refreshToken:${refreshToken}`, user.id)
       .expire(`refreshToken:${refreshToken}`, refreshExpire)
-      .set(`userToken:${user.id}`, accessToken)
-      .expire(`userToken:${accessToken}`, expire)
-      // .set(`userRefreshToken:${user.id}`, refreshToken)
-      // .expire(`userRefreshToken:${accessToken}`, refreshExpire)
       .sadd(`userToken_${user.id}`, accessToken)
       .sadd(`userRefreshToken_${user.id}`, refreshToken)
       .exec();
@@ -80,7 +84,7 @@ export class AuthService {
     const result = await this.captchaService.check(captchaId, captcha);
 
     if (!result) {
-      throw R.error('验证码错误');
+      throw R.error('验证码错误', R.BusinessCode.CAPTCHA_ERROR);
     }
     return {
       expire,
@@ -96,7 +100,10 @@ export class AuthService {
     );
 
     if (!userId) {
-      throw R.error('用户凭证已过期，请重新登录！');
+      throw R.error(
+        '用户凭证已过期，请重新登录！',
+        R.BusinessCode.TOKEN_EXPIRED
+      );
     }
 
     const { expire } = this.tokenConfig;
@@ -110,6 +117,7 @@ export class AuthService {
         JSON.stringify({ userId, refreshToken })
       )
       .expire(`accessToken:${accessToken}`, expire)
+      .set(`userToken:${userId}`, accessToken)
       .exec();
 
     const refreshExpire = await this.redisService.ttl(
@@ -135,7 +143,7 @@ export class AuthService {
       .where('u.id = :id', { id: userId })
       .getOne();
     if (!entity) {
-      throw R.error('当前用户不存在！');
+      throw R.error('当前用户不存在！', R.BusinessCode.USER_NOT_FOUND);
     }
 
     return entity.toVO();
@@ -146,7 +154,10 @@ export class AuthService {
     );
 
     if (captcha !== resetPasswordDTO.emailCaptcha) {
-      throw R.error('邮箱验证码错误或已失效');
+      throw R.error(
+        '邮箱验证码错误或已失效',
+        R.BusinessCode.EMAIL_CAPTCHA_EXPIRED
+      );
     }
 
     const user = await this.userModel.findOneBy({
@@ -154,7 +165,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw R.error('邮箱不存在');
+      throw R.error('邮箱不存在', R.BusinessCode.EMAIL_NOT_FOUND);
     }
 
     const password = await this.rsaService.decrypt(
