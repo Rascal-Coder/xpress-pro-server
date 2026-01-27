@@ -2,13 +2,14 @@ import { Inject, Provide, Singleton } from '@midwayjs/core';
 import { RedisService } from '@midwayjs/redis';
 import { R } from './base.error.util';
 import * as crypto from 'crypto';
+import { PublicKeyVO } from '@/module/system/auth/vo/publickey';
 @Provide()
 @Singleton()
 export class RSAService {
   @Inject()
   redisService: RedisService;
 
-  async getPublicKey(): Promise<string> {
+  async getPublicKey(): Promise<PublicKeyVO> {
     // 使用 Node.js 内置 crypto 生成 RSA 密钥对
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
       modulusLength: 2048,
@@ -22,7 +23,9 @@ export class RSAService {
       },
     });
     await this.redisService.set(`publicKey:${publicKey}`, privateKey);
-    return publicKey;
+    return {
+      publicKey,
+    };
   }
 
   async decrypt(publicKey: string, data: string): Promise<string> {

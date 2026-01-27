@@ -26,6 +26,8 @@ import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@midwayjs/typeorm';
 import { uuid } from '@/utils/uuid';
 import { ResetPasswordDTO } from '../dto/reset.password';
+import { CaptchaVO } from '../vo/captcha';
+import { PublicKeyVO } from '../vo/publickey';
 @Provide()
 @Controller('/auth')
 export class AuthController {
@@ -64,12 +66,14 @@ export class AuthController {
   }
 
   @Post('/refresh/token', { description: '刷新token' })
+  @ApiResponse({ type: TokenVO })
   @NotLogin()
   async refreshToken(@Body(ALL) data: RefreshTokenDTO) {
     return this.authService.refreshToken(data);
   }
 
   @Get('/captcha')
+  @ApiResponse({ type: CaptchaVO })
   @NotLogin()
   async getImageCaptcha() {
     const { id, imageBase64 } = await this.captchaService.formula({
@@ -84,18 +88,20 @@ export class AuthController {
     };
   }
 
-  @Get('/publicKey')
+  @Get('/publicKey', { description: '获取公钥' })
+  @ApiResponse({ type: PublicKeyVO })
   @NotLogin()
   async getPublicKey() {
     return await this.rsaService.getPublicKey();
   }
 
-  @Get('/current/user')
+  @Get('/current/user', { description: '获取当前用户' })
+  @ApiResponse({ type: UserVO })
   async getCurrentUser(): Promise<UserVO> {
     return await this.authService.getUserById(this.ctx.userInfo.userId);
   }
 
-  @Post('/logout')
+  @Post('/logout', { description: '退出登录' })
   async logout(): Promise<boolean> {
     // 清除token和refreshToken
     const res = await this.redisService
@@ -111,7 +117,7 @@ export class AuthController {
     return true;
   }
   @NotLogin()
-  @Post('/send/reset/password/email')
+  @Post('/send/reset/password/email', { description: '发送密码重置邮件' })
   async sendResetPasswordEmail(@Body() emailInfo: { email: string }) {
     if (!emailInfo.email) {
       throw R.error('邮箱不能为空', R.BusinessCode.EMAIL_REQUIRED);
@@ -162,7 +168,7 @@ export class AuthController {
   }
 
   @NotLogin()
-  @Post('/reset/password')
+  @Post('/reset/password', { description: '重置密码' })
   async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
     await this.authService.resetPassword(resetPasswordDTO);
   }
