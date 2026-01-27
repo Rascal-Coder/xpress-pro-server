@@ -3,6 +3,7 @@ import { BaseEntity } from '@/common/base.entity';
 import { omit } from 'lodash';
 import { UserVO } from '../vo/user';
 import { FileEntity } from '../../file/entity/file';
+import { RoleEntity } from '../../role/entity/role';
 @Entity('sys_user')
 export class UserEntity extends BaseEntity {
   @Column({ comment: '用户名称' })
@@ -29,4 +30,5 @@ export class UserEntity extends BaseEntity {
   }
 
   avatarEntity?: FileEntity;
+  roles: RoleEntity[];
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@midwayjs/swagger';
+import { FileVO } from '../../file/vo/file';
 
 export class UserVO {
   @ApiProperty({ description: '主键ID', required: false })
@@ -19,9 +20,12 @@ export class UserVO {
   @ApiProperty({ description: '性别（0:女，1:男）', required: false })
   sex?: number;
 
-  @ApiProperty({ description: '头像路径', required: false })
-  avatarPath?: string;
-
+  @ApiProperty({
+    description: '头像文件信息',
+    type: () => FileVO,
+    required: false,
+  })
+  avatarEntity?: FileVO;
   @ApiProperty({ description: '创建时间', required: false })
   createDate?: Date;
 
