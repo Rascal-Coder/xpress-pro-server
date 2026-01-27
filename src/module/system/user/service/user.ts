@@ -14,6 +14,7 @@ import { MailService } from '@/common/mail.service';
 import { FileEntity } from '../../file/entity/file';
 import { UserDTO } from '../dto/user';
 import { uuid } from '@/utils/uuid';
+import { UserRoleEntity } from '../entity/user.role';
 
 @Provide()
 export class UserService extends BaseService<UserEntity> {
@@ -84,6 +85,16 @@ export class UserService extends BaseService<UserEntity> {
           .where('id = :id', { id: userDTO.avatar })
           .execute();
       }
+
+      await manager.save(
+        UserRoleEntity,
+        userDTO.roleIds.map(roleId => {
+          const userRole = new UserRoleEntity();
+          userRole.roleId = roleId;
+          userRole.userId = entity.id;
+          return userRole;
+        })
+      );
 
       this.mailService.sendMail({
         to: email,
