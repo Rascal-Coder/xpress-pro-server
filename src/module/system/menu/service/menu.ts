@@ -45,11 +45,11 @@ export class MenuService extends BaseService<MenuEntity> {
     const [data, total] = await this.menuModel.findAndCount({
       where,
       order,
-      skip: page * pageSize,
+      skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    if (!data.length) return { data: [], total: 0 };
+    if (!data.length) return { items: [], total: 0 };
 
     const ids = data.map((o: MenuEntity) => o.id);
     const countMap = await this.menuModel
@@ -71,7 +71,7 @@ export class MenuService extends BaseService<MenuEntity> {
       };
     });
 
-    return { data: result, total };
+    return { items: result, total };
   }
 
   async getChildren(parentId?: string) {

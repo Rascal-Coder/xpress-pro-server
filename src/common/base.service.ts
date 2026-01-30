@@ -37,7 +37,7 @@ export abstract class BaseService<T extends BaseEntity> {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-    return { data: data.map(entity => entity.toVO()), total };
+    return { items: data.map(entity => entity.toVO()), total };
   }
 
   async list(where?: FindOptionsWhere<T>) {

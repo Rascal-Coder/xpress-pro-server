@@ -10,7 +10,7 @@ import {
   Param,
   Put,
 } from '@midwayjs/decorator';
-import { NotLogin } from '@/decorator/not.login';
+// import { NotLogin } from '@/decorator/not.login';
 import { MenuDTO } from '../dto/menu';
 import { MenuService } from '../service/menu';
 import { R } from '@/common/base.error.util';
@@ -47,7 +47,7 @@ export class MenuController {
   }
 
   @Get('/list', { description: '查询全量菜单' })
-  @NotLogin()
+  // @NotLogin()
   async list() {
     return await this.menuService.list();
   }

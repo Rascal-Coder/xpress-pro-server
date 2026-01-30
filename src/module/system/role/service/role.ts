@@ -111,13 +111,13 @@ export class RoleService extends BaseService<RoleEntity> {
 
     const [data, total] = await queryBuilder
       .orderBy('createDate', 'DESC')
-      .skip(page * size)
+      .skip((page - 1) * size)
       .take(size)
       .getManyAndCount();
 
     return {
       total,
-      data,
+      items: data,
     };
   }
 

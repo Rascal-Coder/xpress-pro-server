@@ -209,7 +209,7 @@ export class UserService extends BaseService<UserEntity> {
       ]);
     });
   }
-  async page<T>(page = 0, pageSize = 10, where?: FindOptionsWhere<T>) {
+  async page<T>(page = 1, pageSize = 10, where?: FindOptionsWhere<T>) {
     const [data, total] = await this.userModel
       .createQueryBuilder('t')
       .leftJoinAndMapOne(
@@ -219,13 +219,13 @@ export class UserService extends BaseService<UserEntity> {
         'file.pkValue = t.id and file.pkName = "user_avatar"'
       )
       .where(where)
-      .skip(page)
+      .skip(page - 1)
       .take(page * pageSize)
       .orderBy('t.createDate', 'DESC')
       .getManyAndCount();
 
     return {
-      data: data.map(entity => entity.toVO()),
+      items: data.map(entity => entity.toVO()),
       total,
     };
   }

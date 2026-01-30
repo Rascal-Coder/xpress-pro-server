@@ -79,7 +79,7 @@ export class MainConfiguration {
       adminUser.email = 'admin@qq.com';
       adminUser.phoneNumber = '18144444444';
       adminUser.userName = 'admin';
-
+      adminUser.sex = 1;
       await this.userModel.save(adminUser);
     }
   }

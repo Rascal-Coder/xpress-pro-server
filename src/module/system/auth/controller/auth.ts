@@ -4,7 +4,6 @@ import {
   Inject,
   Post,
   Provide,
-  ALL,
   Get,
 } from '@midwayjs/decorator';
 import { ApiResponse } from '@midwayjs/swagger';
@@ -51,7 +50,7 @@ export class AuthController {
   @Post('/login', { description: '登录' })
   @ApiResponse({ type: TokenVO })
   @NotLogin()
-  async login(@Body(ALL) loginDTO: LoginDTO) {
+  async login(@Body() loginDTO: LoginDTO) {
     const password = await this.rsaService.decrypt(
       loginDTO.publicKey,
       loginDTO.password
@@ -68,7 +67,7 @@ export class AuthController {
   @Post('/refresh/token', { description: '刷新token' })
   @ApiResponse({ type: TokenVO })
   @NotLogin()
-  async refreshToken(@Body(ALL) data: RefreshTokenDTO) {
+  async refreshToken(@Body() data: RefreshTokenDTO) {
     return this.authService.refreshToken(data);
   }
 
